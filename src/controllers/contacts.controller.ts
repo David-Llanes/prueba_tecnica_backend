@@ -1,7 +1,6 @@
 import { Request, Response } from 'express'
 import { db } from '../db'
 import { contactsTable } from '../db/schema'
-
 import { sql } from 'drizzle-orm'
 import { Contact } from '../types'
 import { contactSchema } from '../utils/schema-validators'
@@ -66,14 +65,13 @@ class ContactsController {
 
   // Create Contact
   async create(req: Request, res: Response) {
-    // const { name, lastname, email, numbers, addresses } = req.body
-
     try {
       const result = contactSchema.safeParse(req.body)
 
       if (!result.success) {
         const formattedErrors = formatErrors(result.error)
-        return res.status(422).json({ errors: formattedErrors })
+        res.status(422).json({ errors: formattedErrors })
+        return
       }
 
       const { name, lastname, email, numbers, addresses } = result.data
@@ -103,7 +101,8 @@ class ContactsController {
 
       if (!result.success) {
         const formattedErrors = formatErrors(result.error)
-        return res.status(422).json({ errors: formattedErrors })
+        res.status(422).json({ errors: formattedErrors })
+        return
       }
 
       const { name, lastname, email, numbers, addresses } = result.data
